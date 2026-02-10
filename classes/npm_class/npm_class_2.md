@@ -1,72 +1,68 @@
-<!-- NPM is just like a repository but access those packages we need to run commands-->
-<!-- NPM saves time since someone has taken time to reasearch and built it for us -->
-<!-- Some of these packages are open sourced -->
+# NPM Class 2
 
-<!-- You can decide ti make your own and monitise it. But in this cohort, we are not building packages, it requires a lot of work -->
+## Overview
 
-<!-- It is possible to build a project and share it to a person. -->
-<!-- You don't need to copy the node_module folder all you need to do is to send the package.json and package.lock.json file -->
+In this class, we cover the advanced features of NPM, including:
 
-<!-- All the person need to do is to run npm install alone -->
-# npm install
+- Working with package.json
+- Managing dependencies
+- NPM scripts
+- Publishing packages to the NPM registry
 
-<!-- How packages are updated with the semVer MAJOR.MINOR.PATCH -->
+## Package.json
 
-# CHANGE LOG Example for an Android verion 10
-10.0.1 = Fixed Camera (patch 1)
-10.0.2 = Fixed Flashlight (patch 2)
-10.1.0 = Added AirDriop (minor 1)
-10.2.0 = Added Bluetooth (minor 1)
+The package.json file is crucial for any NPM project. It:
 
-# After all that, then a new version is released but with newer features
-11.0.0 (Major Update)
+- Holds metadata relevant to the project
+- Lists the packages your project depends on
+- Allows you to scripts to automate tasks
 
-<!-- We can go to https://www.npmjs.com/package/express and check different version of express -->
+Example:
 
-<!-- Notice the ones with -beta, i.e they are unstable -->
+```json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "description": "A sample project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+```
 
-<!-- The symbol in the version is important * ~ `-->
+## Managing Dependencies
 
+To install a package, use:
 
-# Importing and exporting of modules ====> npm_class_2.js
-## Folder structure for any node project
+```bash
+npm install <package-name>
+```
 
-|-- my_module
-|-- node_module/
-    |-- index.js
-    |-- package.json
+To remove a package:
 
-<!-- There are different types of modules -->
-<!-- Local modules, Custom modules and 3rd party modules e.g fs, http-->
+```bash
+npm uninstall <package-name>
+```
 
-<!-- 3rd party modules are modules you install outside your system not built by you -->
-<!-- Example is express is a package which contains a 3rd party modules-->
+## NPM Scripts
 
-<!-- Custom modules are modules that built by you -->
+NPM scripts allow you to run scripts defined in your package.json file.
 
-<!-- Local or built Node.js modules -->
-<!-- You don't install local and custom modules -->
+Run a script using:
 
-<!-- Custom modules you import them -->
-<!-- 3rd party, you install the package then import the module from the package -->
+```bash
+npm run <script-name>
+```
 
-# npm install color 
+## Publishing Packages
 
-<!-- package name is color -->
+To publish a package, ensure you are logged in and use:
 
-# There is something called import and export
-# There is cjs and esm 
+```bash
+npm publish
+```
 
-<!-- Common JavaScript -->
-<!-- EcmaScript what we will be using-->
-
-<!-- ESM uses import and export keywords -->
-
-
-
-
-
-
-
-
-
+Ensure that your package.json has the correct information before publishing!
