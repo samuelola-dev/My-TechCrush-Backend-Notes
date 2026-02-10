@@ -1,0 +1,19 @@
+{
+  "name": "http_class",
+  "version": "1.0.0",
+  "description": "",
+  "main": "http_class_2.js",
+  "type": "module",
+  "scripts": {
+    "basic": "node http_class_2.js",
+    "advanced": "node index.js",
+    "test": "echo \n My first HTTP server "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "http": "^0.0.1-security"
+  }
+}

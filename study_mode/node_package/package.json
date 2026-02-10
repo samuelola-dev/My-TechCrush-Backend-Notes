@@ -1,0 +1,20 @@
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "message": "notepad",
+    "loop": "node loop.js"
+  },
+  "keywords": [],
+  "author": "Samuel Ola",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^5.2.1",
+    "is-number": "^7.0.0",
+    "react": "^19.2.4"
+  }
+}
