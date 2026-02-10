@@ -5,7 +5,9 @@
   "main": "http_class_2.js",
   "type": "module",
   "scripts": {
-    "basic": "node http_class_2.js",
+    "dev": "node http_class_2.js",
+    "dev2": "node http_class_3.js",
+    "dev3": "node http_class_4.js",
     "advanced": "node index.js",
     "test": "echo \n My first HTTP server "
   },

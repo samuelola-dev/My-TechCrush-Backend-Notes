@@ -2,27 +2,27 @@ import http from "node:http";
 
 
 
-const port = "3000";    // Use 4 digits for port
+const port = "2007";    // Use 4 digits for port
 const hostName = "127.0.0.1";   // local host
 
 // Create an HTTP sever
 
 const server = http.createServer((req, res) => {
 
-    // console.log("Request body:", req.body);
+    console.log("Request body:", req);
     
     // Set response headers
     // With res we can set any frontend
 
-    res.statusCode = 200;
+    res.statusCode = 404;
 
     // Set header helps to set the format of the format of the response like text, pictures, JSON file
-    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Type", "text/html");
 
     // res.setHeader()
 
     // Request end sets the response after the server is done.
-    res.end("Hello, Samuel, you server is now runnning! :-) \n");
+    res.end("Hello, World! :-) \n");
 
 });
 
@@ -43,5 +43,8 @@ server.listen(port, ()=> {
     console.log(`Server running at http://${hostName}:${port}/`);
 });
 
+// Listen on port 2007
+
+// res.end is the final message from the server
 
 
