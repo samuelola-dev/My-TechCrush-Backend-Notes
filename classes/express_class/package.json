@@ -1,0 +1,22 @@
+{
+  "name": "Express Class",
+  "version": "1.0.0",
+  "description": "",
+  "main": "express_class.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \n My first Express JS server",
+    "dev": "nodemon express_class_1.js",
+    "start": "node express_class_1.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "http": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
