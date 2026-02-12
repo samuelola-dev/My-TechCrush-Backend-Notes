@@ -5,7 +5,7 @@ import express from "express";
 
 // intialise express as a variable
 const app = express();
-const PORT = 2007;
+const PORT = 3000;
 
 // Item route
 
@@ -33,11 +33,10 @@ app.get("/contact", (req, res) => {
 // app.all takes in everything: get post put ...
 
 app.listen(PORT, ()=> {
-    console.log(`Server running at https://localhost:${PORT}`)
+    console.log(`Server running at http://localhost:${PORT}`)
 });
 
 // For express hostname is always localhost 127.0.0.1
-
 
 
 
