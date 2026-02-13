@@ -8,26 +8,21 @@ const PORT = 3000;
 
 
 app.get("/", (req, res) => {
-    // to send text to user we use res.send, it also allows html because html is text
-    // to send json, we need to convert
-
-    // Note do not use if statement for routinig
     res.send("Welcome to Express.js server! This is a homepage.");
+    console.log("Request", req);
 });
 
 app.get("/about", (req, res) => {
     res.send("This is the about page, We ensure we provide the best web services").status(200);
-
-    // In responses we have bodies cookies headers
 });
 
 app.get("/contact", (req, res) => {
     res.status(200).json({message: "Contact us", email: "contact@example.com"});
 });
 
-// We use this method .use
 
 app.use("/user", userRoute);
+
 
 // Start the server
 app.listen(PORT, ()=> {

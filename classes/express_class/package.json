@@ -6,11 +6,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \n My first Express JS server",
-    "dev": "nodemon ejs_class.js",
+    "dev": "nodemon express_class_4.js",
     "start": "node express_class_2.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Samuel Ola",
   "license": "ISC",
   "dependencies": {
     "ejs": "^4.0.1",
