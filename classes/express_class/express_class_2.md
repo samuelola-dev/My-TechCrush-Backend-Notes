@@ -42,7 +42,7 @@ Then we can monitorise our codebase
 
 ## Postman API
 For this cohort we are working on `GET, POST, PUT, and DELETE`
-Address bar we put the url `htp://localhost:2007`
+Address bar we put the url `http://localhost:2007`
 We have the response and the request section, cookies section
 We can share and collaborate with people on postman. So we don't have to use browser again
 

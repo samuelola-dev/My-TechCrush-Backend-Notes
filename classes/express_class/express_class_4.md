@@ -21,6 +21,55 @@ app.listen(3000, ()=>{
 
 ````
 
+Search query are objects that are to be destructured
+
+### Start afresh
+
+For better understanding and quick output 
+
+<b><i>app.js</i></b>
+````
+.........
+app.get("/search", (req, res) => {
+    const searcQuery = req.query;
+    res.send(searcQuery);
+});
+````
+
+#### PostMan Search bar
+
+Type this in the search bar 
+
+<button>GET</button> ``http://localhost:3000/search?name=Esther&age=16``
+
+Press ``Send``
+
+Notice the output on the postman's tabs
+
+#### PostMan Params Tab
+
+<b><i>Params</i></b>
+
+````
+Key                     Value
+-----                   -----
+name                    Esther
+age                     16
+````
+
+#### PostMan Body Tab at Response Section
+
+<b><i>Body</i></b>
+````
+{
+    name: "Esther",
+    age: 16
+}                    
+````
+
+So as you are tr
+
+
 
 ### Project Folder Structuring
 Proper folder struture is crucial for software development
