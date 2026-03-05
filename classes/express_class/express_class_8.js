@@ -1,11 +1,16 @@
 import express from "express";
+
 import cookieParser from "cookie-parser";
 
 const app = express();
-const PORT = 3000;
+const PORT = 6767;
 
 // Cookie parser middleware
 app.use(cookieParser());
+
+app.get("/", (req, res)=> {
+    res.status(200).send("Welcome to the app");
+})
 
 // Ways to get cookies
 app.get("/set-cookies", (req, res) => {
@@ -18,6 +23,9 @@ app.get("/get-cookies", (req, res) => {
     res.send(`Cookie theme: ${theme}`);
 });
 
-app.listen(PORT, ()=>{
-    console.log(`Server now running at http://localhost:${PORT}/`);
+app.listen(PORT, () => {
+    console.log(`Server now running at http://localhost:${PORT}`);
 });
+
+
+

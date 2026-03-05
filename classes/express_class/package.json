@@ -6,19 +6,19 @@
   "type": "module",
   "scripts": {
     "test": "echo \n My first Express JS server",
-    "dev": "nodemon express_class_8.js",
+    "dev": "nodemon express_class_9.js",
     "start": "node express_class_2.js"
   },
   "keywords": [],
   "author": "Samuel Ola",
   "license": "ISC",
   "dependencies": {
-    "cookie": "^1.1.1",
+    "cookie-parser": "^1.4.7",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
+    "express-validator": "^7.3.1",
     "http": "^0.0.1-security",
-    "multer": "^2.1.0",
-    "parser": "^0.1.4"
+    "multer": "^2.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
