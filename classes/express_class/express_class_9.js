@@ -1,9 +1,10 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import jsonValidator from "./utils/jsonValidator.js";
+import validationMiddleware from "./utils/validationMiddleware.js";
 
 const app = express();
-const PORT = 6767;
+const PORT = 6167;
 
 app.use(express.json());
 
@@ -22,21 +23,20 @@ app.get("/", (req, res)=>{
 
 // checks if userid is numeric
 
-app.post("/json-data", jsonValidator,  (req, res)=>{
+app.post("/json-data", jsonValidator, validationMiddleware, (req, res)=>{
 
-    const validationStatus = validationResult(req);
-    console.log(validationStatus);
+    // const validationStatus = validationResult(req);
+    // console.log(validationStatus);
 
-    console.log(validationResult)
-    if (!validationStatus.isEmpty()) {
-        res.json(validationStatus.errors)
-    }
-
+    // console.log(validationResult)
+    // if (!validationStatus.isEmpty()) {
+    //     res.json(validationStatus.errors)
+    // }
 
     const {userId, message} = req.body;
     
     res.json({
-        status: "Sucess",
+        status: "Success",
         userId: userId,
         message,
     });
@@ -44,6 +44,7 @@ app.post("/json-data", jsonValidator,  (req, res)=>{
 
 app.listen(PORT, ()=>{
     console.log(`Server now running at localhost:${PORT}/`);
+
 });
 
 

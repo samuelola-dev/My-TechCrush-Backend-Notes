@@ -122,6 +122,7 @@ if (!validationStatus.isEmpty()) {
 
 So since value is undefined, there is error, so that's false. So we say that if `!validationStatus.isEmpty()` that is <b>if it is not empty </b>
 
+
 ```
 if (!validationStatus.isEmpty()) {
     res.json(validationStatus.errors);
@@ -136,6 +137,8 @@ if (!validationStatus.isEmpty()) {
 ```
 
 So if there is error return a Error response or if there is no error continue to return a Sucess response
+
+Note: there is also the `.notEmpty()` which checks if the there is error. It is like saying `!validationStatus.isEmpty()` is equal to `validationStatus.notEmpty()`
 
 Now so if we want to secure things we use `.escape()`we use it in the routelevel middleware `body("userId").isNumeric().escape()`. This is method chaining
 
@@ -236,7 +239,7 @@ We can put these express validations are in our `/utils` folder as save as jsonV
 
 then export it and import it in our app.js
 
-#### <i>jsonValidator.js</i>
+#### <i>utils/jsonValidator.js</i>
 
 ```
 import {body} from "express-validator";
@@ -255,6 +258,109 @@ export default jsonValidator;
 then
 
 `import jsonValidator from "./utils/jsonValidator.json"`
+
+Also we can store the validationResult middleware in the utils folder
+
+#### <i>utils/validationMiddleware.js</i>
+
+```
+import {validationResult} from "express-validator"
+
+const validationMiddleware = (req, req, next) => {
+    const validationStatus = validationResult(req);
+    !validationStatus.isEmpty() && res.json({success: "false", error: validationStatus.array()});
+    next();
+}
+
+export default validationMiddleware;
+```
+
+then 
+
+`import validationMiddleware from "./utils/validationMiddleware.js"`
+
+Using `validationStatus.array()` we can return array of the two errors instead of an array of separate objects
+
+`app.post("/json-data", jsonValidator, validationMiddleware, (req, res)=>{});`
+
+### Validation Methods
+
+- `body()`: validates data in the body of the request
+- `query()`: validates data in the query strings
+- `param()`: validate data in the route parameters
+- `check()`: generic validator for any field
+- `header()`: validate data in header
+- `withMessage()`: attached after validator, contains a message if the validation fails
+
+### Sanitisation Methods
+
+Santisation is used to clean up data before it is used. This includes actions like trimming whitespaces or escaping special characters/
+
+- `sanitise()`: sanitises fields 
+- `escape()`: escapes HTML tags
+- `normalizeEmail()`: Converts email to normalised format e.g lowercased
+- `trim()`: Removes whitespacs from the start and end of a strings.
+
+We can chain multiple validation methods together apply several rules to the same fields.
+
+`escape()` prevents the use of `<script></script>`
+
+### String Validators
+
+`isLength()`, `isEmpty()`, `notEmpty()`, is `isAlpha()` only alphabets, `isAlphanumeric()` for checking if string contains letters and numbers only, `isAscii()`, `isBase64()`, `isEmail()` validates email format, `isURL()` validates URL format, `isUDID()` checks for valid UDID (v1-v5)
+
+### Numeric, Boolean, Date and Time Validators
+`isInt()`, `isFloat()`, `isDecimal()`, `isDivisibleBy(number)`, `isDate()`, `isAfter(date)`, `isBefore(date)`, `isBoolean()`
+
+### Array, Regex, File, and Custom Validators
+
+- `isArray()` - validates if the input is an array, 
+- `isIn()` - checks if the value is in a specified array
+- `matches(regex)`- checks if the strings matches a given expression
+```
+body('user').matches(/^[a-xA-z0-9]*$/)
+```
+
+- `contains(seed)`: Checks id the string contains a given seed value
+- `isMimeType(type)`: Validates MIME type of a file
+- `isBase64()`: Ensure the value is Base-64 encoded
+
+- `custom(callback)` Enables custom validation logic
+
+```
+body("age").custom(value => {
+    if (value < 18) {
+        throw new Error("Age must be at least 18");
+    } else {
+        return true;
+    }
+});
+```
+
+#### Response
+---
+```
+"success": "false",
+"error": [
+    {
+        "type": "field",
+        "value": 12,
+        "msg": "Age must be at least 18",
+        "path": "age",
+        "location": "body"
+    }
+]
+}
+```
+
+
+
+
+
+
+
+
+
 
 
 
