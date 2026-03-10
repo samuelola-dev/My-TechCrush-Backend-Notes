@@ -1,0 +1,7 @@
+import express from "express";
+
+const app = express();
+
+app.listen(5000, ()=>{
+    console.log("Sever now runnning at http://localhost:5000/")
+});
