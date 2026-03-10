@@ -55,13 +55,52 @@ A banking system will never use MongoDB. <b>Do not use MongoDB in a fintech app.
 ### Key Characteristics of NoSQL
 It does not require a fixed schema. So it allows easy modification to data strutures during downtime. 
 
-For SQL you need to run scripts to add column and make changes. But for NoSQL, they can edit it and this won't break anything
+For SQL you need to run scripts to add column and make changes. But for NoSQL, you just change your line of code and this won't break anything
 
-Scalability: For SQL you scale data vertically, while NoSQL databased are designed to scale horizontally across multiple server.
+Scalability: For SQL you scale data vertically,because how structured it is we don't really do cluster but imporve the performance our pc, while NoSQL database are designed to scale horizontally across multiple server.
 
 To scale vertically is like your database is using v2 so your system must use v3.
 
-Variety of Data: No SQL can stire different type of data models including 
+Variety of Data: No SQL can store different type of data models including 
 
-- Document Stores
+- Document Stores (e.g MongoDB) stores data in JSON-like documents
+- Key valued-pairs Stores (e.g Redis) stores as key-value pairs
+- Column-Family Stores (e.g Cassandra) stores data in column insteadof rows.
+- Graph Database (e.g Neo4) store data as nodes and edges for representing relationship.
+
+If you know MySQL, you will know Postgress.
+
+#### Use case of NoSQL
+Applications requiring rapid development with changing requirements such as social media platfroms, real-time analytics and content management system
+
+Comparing SQL and NoSQL
+Data Structure: SQL is tabular (relational), NoSQL (various formats, documents, key-value)
+
+- Schema: SQL has fixed schema, NoSQL has dynamic schema
+- Transactions: SQL is ACID compliance, NoSQL is BASE (Basicaly, Available Soft state)
+- Scalability: SQL is vertical scaling, NoSQL is horizontal scaling
+- Query Language: SQL is the query language of SQL database, NoSQL Database query language varies by database.
+- Usecases: SQL is for complex queries and structured data. NoSQL is for large volumes of unstructure. 
+
+
+NoSQL error is hard to fix. Like saying we create a table called "database" and "Database". SQL will say table exists, but NoSQL will just accept it.
+
+MongoDB use mongoose
+
+Don't ever use NoSQL for any banking
+
+#### CRUD
+Create, Read, Update and Delete. There are the four basic operations fundamental to managing data in application.
+
+- Create new record(s)
+- Read some/all record(s)
+- Update some/all record(s)
+- Delete some/all record(s)
+
+We also have DDL, like for double data manipulation
+
+If you want strict go for SQL. You can choose to use SQL or NoSQL for any applications. We can use both but not the same functions. But advisable to use one.
+
+
+
 
