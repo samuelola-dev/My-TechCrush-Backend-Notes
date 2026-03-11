@@ -3,7 +3,7 @@ import 'dotenv/config';
 export const configuration  = {
     API_URL: process.env.API_URL || 'http://localhost:5000',
     FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5000', 
-    CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5000',
+    ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN ? (process.env.ALLOWED_ORIGIN).split(",") : 'http://localhost:4000',
     PORT: process.env.PORT || 3000,
     DB_HOST: process.env.DB_HOST || 'localhost',
     DB_USER: process.env.DB_USER || 'root',

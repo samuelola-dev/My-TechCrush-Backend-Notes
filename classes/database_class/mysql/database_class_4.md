@@ -65,7 +65,7 @@ Every node.js process is a global object, and since it is a global object we can
 
 `nodemailer` is use for sending database
 
-`sequlise` is used as ORM to connect to our database. We can also use sequelise with postgresql
+`sequlise` is used as ORM to connect to our database. We can also use sequelize with postgresql
 
 `uuid` is used for generating uuid - Universal Uniform Identifer, which is used for logging
 
@@ -80,12 +80,12 @@ Note everything in the folder structure must be in the `src` (sourc ecode) folde
 
 <b><i>config/db.js</i></b>
 
-We setup sequelise, if we check the documentation, we can authenticate, log and so many other things like closing connection after application stops running.
+We setup sequelize, if we check the documentation, we can authenticate, log and so many other things like closing connection after application stops running.
 
 ```
-import {Sequelise} from "sequelize";
+import { Sequelize } from "sequelize";
 
-export const sequelise = new Sequelise('database', 'username', 'password', {
+export const sequelize = new Sequelize('database', 'username', 'password', {
     host: 'localhost',
     dialet: 'mysql'
 });
@@ -135,7 +135,7 @@ So we can also set a value such that incase if a particular configuration is mis
 All what we are doing the `import 'dotenv/config';` is loading it inside process.
 
 
-### Loading the configurtion inside the .env file
+### Loading the configurations inside the .env file
 So we are going to create a .env file inside our root folder
 
 <b><i>.env</i></b>
@@ -166,7 +166,7 @@ For the `JWT_SECRET` you can generate one by going to <a href="https://jwtsecret
 CORS_ORIGIN=http://localhost:5000/, http://local:4000, http://github.com
 ```
 
-Setting this allows to get another cors url incase if one url doesn't work
+Setting this allows to get another cors urls incase if one url doesn't work
 
 
 ```
@@ -187,6 +187,286 @@ Back to <b><i>config/db.js</i></b>
 We import the configuration inside the db so that we can make use of `DB_HOST`, `DB_PORT` and other things related to database
 
 `pool:` sets the minimum number of requests spawn 
+
+    logging: configuration.NODE_ENV === 'development' ? console.log : false,
+
+This means that if it is development, log it, if it is not do not log.
+
+### Configuring Cors - Cross Origin Resource Sharing
+
+<b><i>src/config/cors.js</i></b>
+
+Remember in our .env file, we set multiple cross origins incase if one doesn't work,  so we can't send that to `cors.js`. We need to send them url by url
+
+    ALLOWED_ORIGIN=http://localhost:5000/, http://local:4000, http://github.com  
+
+So we do so by splitting them with comma
+
+on <b><i>.env</i></b> file, we are going to make use of ternary operations
+
+    ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN ? (process.env.ALLOWED_ORIGIN).split(",") : 'http://localhost:4000',
+
+This configuration says that of the confguration exixts return the strings of the 4 origins, but we must return one value, so we use .split(",") and returned an array instead. That means it is dynamic origin.
+
+<b><i>src/config/cors.js</i></b>
+
+    export const corsOptions = {
+        origin: configuration.ALLOWED_ORIGIN,
+        credentials: true
+    };
+
+If we check the documentation, we can assign a call back to handle error. Callback lets us to manually setup a function that will do the actual checkup. It checks if the origins work
+
+    export const corsOptions = {
+    origin(origin, callback){
+        if (!origin || configuration.ALLOWED_ORIGIN.includes(origin)){
+            callback(null, true);
+        }
+        callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true
+
+};
+
+The origin sets a callback that uses the logical OR `||` that checks incase origin does it exist, or takes a origin and checks if that origin exists in the array of origins in the configuration. 
+
+If that origin exists the among the array of origins using the `Array.includes()` method, the callback return true for success
+
+If both conditions are not meet throw an error "Not allowed CORS"
+
+Some other things to note, is to set some methods that pass through cors, you may decide not to validate some methods through cors
+
+Ideally we should validate methods that changes things in your database like POST, PUT, PATCH, DELETE, you may ignore POST
+
+So we going to do that in our cors options
+
+    methods: ["GET", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-type", "Authorization"]
+
+### Importing configurations into our app.js
+
+<b><i>app.js</i></b>
+
+We start by importing express, middlewares and cors because we need it in resource methods like POST.
+
+    import express from "express";
+    import cors from "cors";
+
+
+We then import our configurations for .env, database, cors
+
+    import { configuration } from "./config/env.js";
+    import { corsOptions } from "./config/cors.js";
+    import { sequelize } from "./config/db.js";
+
+If we did not import configuration, the .env will not work
+
+    const app = express();
+
+Now our express middlewares like expressURLencoded, expressJSON middleware, cookieparser and even our cors serves as 3rd party middleware
+
+    app.use(cors(corsOptions));
+    app.use(express.json());
+    app.use(express.urlencoded({extended: true}));
+    app.use(cookieParser)
+
+`cor` uses the cors option configuration in `cor(corsOption)`
+
+`express.json()` for handling
+`express.usrlencoded` in case if frontend want to send form
+`cookieParser`for cookies
+
+Note for cookie-parser it is
+
+    npm install cookie-parser
+
+Now to set our endpoints to check the status or health of our application. like OK status, Date. Note that the date is based on the PC. So if we have our server hosted in China, we going to have China's date in our server.
+
+    app.get("/health", (req, res)=>{
+        res.json({status: "OK", date: new Date()});
+    });
+
+You can put your sequelize after all our route. So this we want all our route to run while application is setup. We plan to but our sequelize after
+
+We use our iife - Immediately Invoked Function Expression `()=>{}()` for our sequelize
+
+    (async ()=> {
+        try {
+            await sequelize.authenticate();
+            await sequelize.sync({alter: true});
+            console.log("Connection Sucessful")
+        } catch (error) {
+            console.error("Unable to start the application", error)
+            process.exit(1);
+        }
+    });
+
+
+`sequelize.authenticate()` allows us to authenticate into our database. It checks if connection, db password is valid. After that we need to sync our models. - `sequelize.sync()` for Synchronizaion
+
+ `sequelize.sync({ alter: true })` This also checks if the same models (i.e tables in mysql) we are syncing exists in the database.
+
+If you change your models, like you added "age" to your model the `alter: true` applies those changes to the database. It advisable not to use `sequelize.sync(force)` because it first wipes the entire database before making changes. It first drops or delete tables before applying changes.
+
+### Creating Model for Sequelize to work with
+
+<b><i>src/models/user.model.js</i></b>
+
+We need to create a model for our users in MySQL. We will import Database, Model, sequelize configuration which is where the connection will come from, bycrpt for hashing user password,
+
+    import { DataTypes, Model } from "sequelize";
+    import { sequelize } from "../config/db";
+    import bcrypt from "bcryptjs";
+
+For us to create our model we need to extend the `Model` Object
+
+    class User extends Model {}
+    
+Then we set the key for each field and value by initializing `User` class in `Uset.init()`. The `.init()` methods takes in the object of all keys as the argument.  The keys serve as columns of yables in our MySQL database   
+
+```
+User.init({
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name: {type: DataTypes.STRING, allowNull: false},
+    email: {type: DataTypes.STRING, allowNull: false, unique: true},
+    password: {type: DataTypes.STRING, allowNull: false},
+    isActive: {type: DataTypes.BOOLEAN, defaultValue: true},
+    isVerified: {type: DataTypes.BOOLEAN, defaultValue: true},
+    role: {type: DataTypes.ENUM('user', 'admin'), defaultValue: 'user'},
+    resetToken: {type: DataTypes.STRING, allowNull: true},
+    lastLogin: {type: DataTypes.DATE, allowNull: true}
+    }
+);
+```
+
+
+We may decide not to put id because sequelize
+
+- Attributes
+
+`type: DataTypes.INTEGER` sets the data type to Number, we also have for other types `DataTypes.BOOLEAN`, `DataTypes.STRING`, 
+
+
+`primaryKey: true` to make it the only key.
+
+`autoIncrement: true` makes the id increase.
+
+`autoNull: false` sets it that the user must fill it
+
+`unique: true` so that we won't have multiple emails
+
+`defaultValueL true` sets default values
+
+
+`resetToken` for password resetting and is set via email
+
+`resetTokenExpiration` sets time for the reset token to expire
+
+`lastLogin` this takes timestamps which is `type: DataTypes.DATE`
+
+`role` for setting either user role or admin
+
+    role: {type: DataTypes.ENUM('user', 'admin'), defaultValue: 'user'},
+
+`.ENUM` means enumerator - means this or that, that is we can have diiferent options. - `.ENUM('user', 'admin')` is only accepts `user` or `admin` as the value.
+
+Ensure that phone number is a string. If we use number, it will remove the `0` also use string in the case of country code `"+234"`
+
+If we check the documentation. there are ither ways to extend the `Model` Object
+
+After that we add `timestamps: true` for tracking time data was created, `sequelize` and `modelName` for referencing, `tableName` for table name.
+
+```
+User.init({
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name: {type: DataTypes.STRING, allowNull: false},
+    email: {type: DataTypes.STRING, allowNull: false, unique: true},
+    password: {type: DataTypes.STRING, allowNull: false},
+    ...........................
+
+    }, {
+        timestamps: true,
+        sequelize,
+        modelName: 'User',
+        tableName: 'users', 
+        hooks:
+    }
+);
+```
+
+With `hooks` We can perform database actions before they enter the database. We have:
+
+`beforeCreate` - before the models is created into the database
+ Here we can perform hashing using `bcrypt`
+
+`beforeUpsert` - before anything update if it exists or insert if it exists
+
+ ```
+ hooks: {
+
+            // Before creating password, check if the password is there, hash it
+            beforeCreate: async (user) => {
+                if (user.password) {
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(user.password, salt);
+                }
+            },
+
+            // If password is changed, then hash it
+            beforeUpdate: async (user) => {
+                if (user.changed("password")) {
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(user.password, salt)
+                }
+            },
+        }
+ ```
+
+
+ 
+ Going back to models we can specify actions for generally any model created by using the Class Model Methods
+
+```
+class User extends Model {
+    async comparePassword(plain) {
+        return await bcrypt.compare(plain, this.password);
+    }
+    toJSON(){
+        const values = {...this.get()};
+        delete values.password;
+        delete values.resetToken;
+        return values;
+    }
+}
+```
+
+`toJSON()` converts everything in any Model to json.
+`delete` deletes things we don't want to enter database.
+
+We will continue with registration next into the services
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
