@@ -1,5 +1,15 @@
 import 'dotenv/config';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// 1. Calculate the root directory path
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// 2. Manually point to the .env file in the root
+import dotenv from 'dotenv';
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 export const configuration  = {
     API_URL: process.env.API_URL || 'http://localhost:5000',
     FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5000', 
@@ -9,9 +19,9 @@ export const configuration  = {
     DB_USER: process.env.DB_USER || 'root',
     DB_PASSWORD: process.env.DB_PASSWORD || 'password',
     DB_NAME: process.env.DB_NAME || 'database',
-    DB_DIALET: process.env.DB_DIALET || 'mysql',
+    DB_DIALECT: process.env.DB_DIALECT || 'mysql',
     JWT_SECRET: process.env.JWT_SECRET || 'secret',
-    JWT_EXPIRES: process.env.JWT_EXPIRES_IN || '1h',
+    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '1h',
     SALT_ROUNDS: process.env.SALT_ROUNDS || '1h',
     SMTP_HOST: process.env.SMTP_HOST || 'smtp.example.com',
     SMTP_PORT: process.env.SMTP_PORT || 587,

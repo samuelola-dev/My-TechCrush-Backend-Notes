@@ -1,4 +1,4 @@
-import { configuration } from "./env";
+import { configuration } from "./env.js";
 
 export const corsOptions = {
     origin(origin, callback){

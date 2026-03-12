@@ -422,7 +422,7 @@ With `hooks` We can perform database actions before they enter the database. We 
         }
  ```
 
-
+The bcrypt.salt() is to tighten the hashing
  
  Going back to models we can specify actions for generally any model created by using the Class Model Methods
 

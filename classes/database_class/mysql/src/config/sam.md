@@ -7,3 +7,9 @@
 - export const name = () => {};
 
 - if (true) if ("String" is not empty)
+- The use of default values in parameters
+- Other suceess status codes via slides
+- Using of index.js as the main exports for a model
+- Set datatypes and charcater max
+- But we can still use express validator 
+- The use of if-statement without {}

@@ -1,24 +1,26 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/db";
+import { sequelize } from "../config/db.js";
 import bcrypt from "bcryptjs";
 
-class User extends Model {
-    async comparePassword(plain) {
-        return await bcrypt.compare(plain, this.password);
-    }
-    toJSON(){
-        const values = {...this.get()};
-        delete values.password;
-        delete values.resetToken;
-        delete values.verifyToken;
-        return values;
-    }
+export class User extends Model {
+  async comparePassword(plain) {
+    return await bcrypt.compare(plain, this.password);
+  }
+
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.password;
+    delete values.resetToken;
+    delete values.verifyToken;
+    return values;
+  }
 }
 
 User.init({
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    name: {type: DataTypes.STRING, allowNull: false},
-    email: {type: DataTypes.STRING, allowNull: false, unique: true},
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    public_id: {type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4},
+    name: { type: DataTypes.STRING, allowNull: false },
+    email: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: {type: DataTypes.STRING, allowNull: false},
     isActive: {type: DataTypes.BOOLEAN, defaultValue: true},
     isVerified: {type: DataTypes.BOOLEAN, defaultValue: true},
