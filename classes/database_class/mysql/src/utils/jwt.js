@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import { configuration } from "../config/env";
+import { configuration } from "../config/env.js";
 // import { token } from "morgan";
 
-export const signedToken = (payload) => 
+export const signToken = (payload) => 
     jwt.sign(payload, configuration.JWT_SECRET, 
     {expiresIn: configuration.JWT_EXPIRES_IN}
 );
 
-export const verifyToken = (payload) => jwt.verify(token, configuration.JWT_SECRET);
+export const verifyToken = (token) => jwt.verify(token, configuration.JWT_SECRET);

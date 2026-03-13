@@ -311,13 +311,138 @@ We may likely encounter Sequelize errors too
         .json({sucess: false, mesage: "Duplicate entry", error: err.errors});
     }
 
-We also have validation errors, jwt error too to handle but later
+We also have validation errors, jwt error too to handle but later. 
+
+We have tested the code and was able to add user to database with public id and encrypted password
 
 Now are going it to use our middleware <b>app.js</b>
 
 
+### Logging In
 
-<!-- ### Logging In
+For logging in, we are going to need email and password as arguments
+
+<b><i>src/services/auth.service.js</i></b>
+
+    static async login(email, password) {}
+
+So we want to check if users exists and if he exist compare the password in database to the one entered
+
+    const user = await User.findOne({where: {email: data.email}});
+    if (user || !await user.comparePassword(password)) throw ApiError.badRequest("Invalid credentials");
+
+
+    await user.update({lastLogin: new Date()});
+
+Now we want to handle authorisation for the user to access routes, so we generate access token.
+
+    const accessToken = signedToken(payload)
+    console.log("Access Token:" + accessToken);
+    return {user, accessToken};
+
+After that we send a suceess response 
+
+Back to auth.controller.js
+
+    export const login = asyncHandler(async(req, res) => {
+        const loginProcess = await AuthService.login(req.body);
+        sendSuccess(res, 
+            {user: loginProcess.user, token: loginProcess.accessToken}, 
+            "Logged in sucessfully", 
+            201
+        );
+    });
+
+So to make use of our controller
+
+    import { login, register } from "../controllers/auth.controller.js";
+
+    router.post("/login", login);
+
+
+### Roles for Admin and Authorisation for accessing routes
+
+In this case, we need to create an endpoint that helps us to fetch user info, two middleware one for roles, one for after they have logged in.
+
+So what we want to do is middleware to protect some endpoints.
+
+<b><i>src/middleware/auth.js</i></b>
+
+We are going to need the verification token
+
+    import { verifyToken } from "../utils/jwt.js";
+
+We need to protect end points so that only people that are <b>logged in</b> can access the endpoints.
+
+We will also create a controller for a route `/profile` that requires you to be logged in.
+
+We will pass the token through the headers i.e frontend will pass it through headers.  
+
+    export const authenticate = async(req, res, next) => {}
+
+We can't use async handler because this is a middleware, it must run finish. If you do, we will not be able to capture errors form the middleware properly. 
+
+We are saying that even after we have exceed what where middleware as been used, we still except a response for anything that is pending.
+
+Whenever a frontend send a token it comes with a prefix `bearer` + space + token. `bearer` is a common protocol used for handling authorisation, we also have others like jest and the rest.
+
+![alt text](src/screenshots/image_6.png)
+
+So what we are using is JWT Bearer
+
+    export const authenticate = async(req, res, next) => {
+        try{
+            const header = req.header.authorisation || undefined;
+            if (!header || !header.startsWith('Bearer')) throw ApiError.unauthorised();
+
+        } catch (error) {
+
+        }
+    }
+
+First we verify if the header contains a form of authorisation. If the header contains an authorisation, we check if it carries the `Bearer` prefix for any JWT. it not, user is not authorised
+
+    const token = header.split(" ")[1];
+    
+After that we capture only the token part of the JWT using `.split()` string method.
+
+    const decoded = verifyToken(token);
+
+Find also need to verify user by id just incase
+
+    const user = await User.findByPk(decoded.id);
+
+If user doesn't exist by id we throw an unauthorised error
+
+    if (!user) throw ApiError.unauthorised();
+
+As a middleware, we pass information from the route to the controller.
+
+    req.user = user 
+    next()
+
+We updated `req.user` as the actual user so that we will not need to verify by id again since it passes the auth middleware. `next()` to move to next middleware or proceed to route.
+
+If get an error, we can use `next(error)` to throw an error.
+
+We can set authorisation for admin
+
+#### Setting Endpoints for only admin through authorisation
+
+    export const authoriseAdmin = (req, res, next) => {
+    try{
+        if (!req.user) throw ApiError.unauthorised();
+        if (req.user.role !== "admin") throw ApiError.unauthorised();
+    } catch (error) {
+        next(error);
+    }
+`}
+
+
+
+
+
+
 
 
 
